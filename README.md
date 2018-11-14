@@ -1,6 +1,7 @@
 # Mailxpert Provider for OAuth 2.0 Client
 
-[![Latest Version](https://img.shields.io/github/release/mailxpert/oauth2-mailxpert.svg?style=flat-square)](https://github.com/mailxpert/oauth2-mailxpert/releases)
+
+![Packagist](https://img.shields.io/packagist/v/mailXpert/oauth2-mailxpert.svg?style=flat-square)
 [![Software License](https://img.shields.io/badge/license-MIT-brightgreen.svg?style=flat-square)](LICENSE)
 [![Build Status](https://img.shields.io/travis/mailXpert/oauth2-mailxpert/master.svg?style=flat-square)](https://travis-ci.org/mailXpert/oauth2-mailxpert)
 [![Coverage Status](https://img.shields.io/scrutinizer/coverage/g/mailxpert/oauth2-mailxpert.svg?style=flat-square)](https://scrutinizer-ci.com/g/mailxpert/oauth2-mailxpert/code-structure)
