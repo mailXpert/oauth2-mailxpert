@@ -1,0 +1,46 @@
+{
+  "name": "mailxpert/oauth2-mailxpert",
+  "description": "mailXpert OAuth 2.0 Client Provider for the PHP League OAuth 2.0 Client",
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "ARTACK WebLab GmbH",
+      "homepage": "https://www.artack.ch"
+    }
+  ],
+  "keywords": [
+    "php",
+    "amazon",
+    "api",
+    "oauth",
+    "oauth2",
+    "client",
+    "authorization",
+    "authentication"
+  ],
+  "require": {
+    "php": "^5.6|^7.0",
+    "league/oauth2-client": "^2.0"
+  },
+  "require-dev": {
+    "phpunit/phpunit": "^5.0",
+    "symfony/var-dumper": "^3.4",
+    "mockery/mockery": "^1.2"
+  },
+  "autoload": {
+    "psr-4": {
+      "Mailxpert\\OAuth2\\Client\\": "src/"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "Mailxpert\\OAuth2\\Client\\Test\\": "tests/src/"
+    }
+  },
+  "repositories": {
+    "packagist.org": {
+      "type": "composer",
+      "url": "https://repo-eu-uk-1.packagist.org"
+    }
+  }
+}
