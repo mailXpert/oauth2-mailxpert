@@ -2,3 +2,4 @@
 /.phpunit.cache/
 /vendor/
 /tools/*/vendor/
+composer.lock
