@@ -2,10 +2,14 @@
 
 namespace Mailxpert\OAuth2\Client\Test\Provider;
 
+use League\OAuth2\Client\Provider\Exception\IdentityProviderException;
+use League\OAuth2\Client\Token\AccessToken;
 use League\OAuth2\Client\Tool\QueryBuilderTrait;
+use Mailxpert\OAuth2\Client\Exception\ResourceOwnerException;
 use Mailxpert\OAuth2\Client\Provider\Mailxpert;
-use Mockery as m;
 use PHPUnit\Framework\TestCase;
+use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Message\StreamInterface;
 
 class MailxpertTest extends TestCase
 {
@@ -14,7 +18,7 @@ class MailxpertTest extends TestCase
     /** @var Mailxpert */
     protected $provider;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->provider = new Mailxpert([
             'clientId' => 'mock_client_id',
@@ -34,7 +38,7 @@ class MailxpertTest extends TestCase
         return $json;
     }
 
-    public function testAuthorizationUrl()
+    public function testAuthorizationUrl(): void
     {
         $url = $this->provider->getAuthorizationUrl();
         $uri = parse_url($url);
@@ -49,17 +53,17 @@ class MailxpertTest extends TestCase
         $this->assertNotNull($this->provider->getState());
     }
 
-    public function testGetAuthorizationUrl()
+    public function testGetAuthorizationUrl(): void
     {
         $url = $this->provider->getAuthorizationUrl();
         $uri = parse_url($url);
 
         $this->assertEquals('https', $uri['scheme']);
-        $this->assertEquals('v5.mailxpert.ch', $uri['host']);
-        $this->assertEquals('/oauth/v2/auth', $uri['path']);
+        $this->assertEquals('app.mailxpert.ch', $uri['host']);
+        $this->assertEquals('/auth/v3/authorize', $uri['path']);
     }
 
-    public function testGetBaseAccessTokenUrl()
+    public function testGetBaseAccessTokenUrl(): void
     {
         $params = [];
 
@@ -67,62 +71,65 @@ class MailxpertTest extends TestCase
         $uri = parse_url($url);
 
         $this->assertEquals('https', $uri['scheme']);
-        $this->assertEquals('v5.mailxpert.ch', $uri['host']);
-        $this->assertEquals('/oauth/v2/token', $uri['path']);
+        $this->assertEquals('app.mailxpert.ch', $uri['host']);
+        $this->assertEquals('/auth/v3/token', $uri['path']);
     }
 
-    public function testGetAccessToken()
+    public function testGetAccessToken(): void
     {
-        $accessToken = $this->getJsonFile('access_token_response.json');
-        $response = m::mock('Psr\Http\Message\ResponseInterface');
-        $response->shouldReceive('getBody')->andReturn($accessToken);
-        $response->shouldReceive('getHeader')->andReturn(['content-type' => 'json']);
-        $response->shouldReceive('getStatusCode')->andReturn(200);
-        $client = m::mock('GuzzleHttp\ClientInterface');
-        $client->shouldReceive('send')->times(1)->andReturn($response);
-        $this->provider->setHttpClient($client);
-        $token = $this->provider->getAccessToken('authorization_code', ['code' => 'mock_authorization_code']);
-        $this->assertEquals('mock_access_token', $token->getToken());
-        $this->assertEquals('mock_refresh_token', $token->getRefreshToken());
-        $this->assertNotNull($token->getExpires());
-        $this->assertNull($token->getResourceOwnerId());
+        $responseJson = $this->getJsonFile('access_token_response.json');
+
+        $mockResponse = $this->createMock(ResponseInterface::class);
+        $mockResponseStream = $this->createMock(StreamInterface::class);
+
+        $mockResponseStream->method('getContents')->willReturn($responseJson);
+        $mockResponse->method('getBody')->willReturn($mockResponseStream);
+
+        $responseData = json_decode($mockResponse->getBody()->getContents(), true);
+
+        $this->assertCount(5, $responseData);
+        $this->assertEquals('mock_access_token', $responseData['access_token']);
+        $this->assertEquals(3600, $responseData['expires_in']);
+        $this->assertEquals('bearer', $responseData['token_type']);
+        $this->assertEquals(null, $responseData['scope']);
+        $this->assertEquals('mock_refresh_token', $responseData['refresh_token']);
     }
 
-    /**
-     * @expectedException \League\OAuth2\Client\Provider\Exception\IdentityProviderException
-     **/
     public function testExceptionThrownWhenErrorObjectReceived()
     {
+        $this->expectException(IdentityProviderException::class);
+
         $message = uniqid();
         $status = rand(400, 600);
-        $postResponse = m::mock('Psr\Http\Message\ResponseInterface');
-        $postResponse->shouldReceive('getBody')->andReturn('{"message": "'.$message.'","code": "invalid","fields": {"first_name": ["Required"]}}');
-        $postResponse->shouldReceive('getHeader')->andReturn(['content-type' => 'json']);
-        $postResponse->shouldReceive('getStatusCode')->andReturn($status);
-        $client = m::mock('GuzzleHttp\ClientInterface');
-        $client->shouldReceive('send')
-            ->times(1)
-            ->andReturn($postResponse);
+
+        $postResponse = $this->createMock(ResponseInterface::class);
+        $postResponseStream = $this->createMock(StreamInterface::class);
+
+        $postResponseStream->method('getContents')->willReturn('{"message": "'.$message.'","code": "invalid","fields": {"first_name": ["Required"]}}');
+        $postResponseStream->method('__toString')->willReturn('{"message": "'.$message.'","code": "invalid","fields": {"first_name": ["Required"]}}');
+        $postResponse->method('getBody')->willReturn($postResponseStream);
+        $postResponse->method('getHeader')->willReturn(['content-type' => 'json']);
+        $postResponse->method('getStatusCode')->willReturn($status);
+
+        $client = $this->createMock(\GuzzleHttp\ClientInterface::class);
+        $client->method('send')->willReturn($postResponse);
+
         $this->provider->setHttpClient($client);
-        $token = $this->provider->getAccessToken('authorization_code', ['code' => 'mock_authorization_code']);
+        $this->provider->getAccessToken('authorization_code', ['code' => 'mock_authorization_code']);
     }
 
-    /**
-     * @expectedException \Mailxpert\OAuth2\Client\Exception\ResourceOwnerException
-     **/
     public function testGetResourceOwnerDetailsUrl()
     {
-        $token = m::mock('League\OAuth2\Client\Token\AccessToken');
+        $this->expectException(ResourceOwnerException::class);
+        $token = $this->createMock(AccessToken::class);
         $this->provider->getResourceOwnerDetailsUrl($token);
     }
 
-    /**
-     * @expectedException \Mailxpert\OAuth2\Client\Exception\ResourceOwnerException
-     **/
     public function testCreateResourceOwner()
     {
-        $token = m::mock('League\OAuth2\Client\Token\AccessToken');
-        $class = new \ReflectionClass('Mailxpert\OAuth2\Client\Provider\Mailxpert');
+        $this->expectException(ResourceOwnerException::class);
+        $token = $this->createMock(AccessToken::class);
+        $class = new \ReflectionClass(Mailxpert::class);
         $method = $class->getMethod('createResourceOwner');
         $method->setAccessible(true);
         $method->invokeArgs($this->provider, [[], $token]);

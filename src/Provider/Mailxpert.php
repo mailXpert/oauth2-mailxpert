@@ -4,6 +4,7 @@ namespace Mailxpert\OAuth2\Client\Provider;
 
 use League\OAuth2\Client\Provider\AbstractProvider;
 use League\OAuth2\Client\Provider\Exception\IdentityProviderException;
+use League\OAuth2\Client\Provider\ResourceOwnerInterface;
 use League\OAuth2\Client\Token\AccessToken;
 use League\OAuth2\Client\Tool\BearerAuthorizationTrait;
 use Mailxpert\OAuth2\Client\Exception\ResourceOwnerException;
@@ -18,9 +19,9 @@ class Mailxpert extends AbstractProvider
      *
      * @return string
      */
-    public function getBaseAuthorizationUrl()
+    public function getBaseAuthorizationUrl(): string
     {
-        return 'https://v5.mailxpert.ch/oauth/v2/auth';
+        return 'https://app.mailxpert.ch/auth/v3/authorize';
     }
 
     /**
@@ -30,9 +31,9 @@ class Mailxpert extends AbstractProvider
      *
      * @return string
      */
-    public function getBaseAccessTokenUrl(array $params)
+    public function getBaseAccessTokenUrl(array $params): string
     {
-        return 'https://v5.mailxpert.ch/oauth/v2/token';
+        return 'https://app.mailxpert.ch/auth/v3/token';
     }
 
     /**
@@ -46,17 +47,21 @@ class Mailxpert extends AbstractProvider
      */
     public function getResourceOwnerDetailsUrl(AccessToken $token)
     {
+        // FIXME: Create owner ressource, possibly use /v3/me endpoint
         throw new ResourceOwnerException();
     }
 
     /**
-     * Get the default scopes uses by this provider. Currently there is no support of scopes at all thus returning an empty array.
+     * Get the default scopes uses by this provider.
      *
      * @return array
      */
-    protected function getDefaultScopes()
+    protected function getDefaultScopes(): array
     {
-        return [];
+        return [
+            'EMAIL',
+            'PROFILE',
+        ];
     }
 
     /**
@@ -84,10 +89,11 @@ class Mailxpert extends AbstractProvider
      *
      * @throws ResourceOwnerException
      *
-     * @return \League\OAuth2\Client\Provider\ResourceOwnerInterface|void
+     * @return ResourceOwnerInterface|void
      */
     protected function createResourceOwner(array $response, AccessToken $token)
     {
+        // FIXME: Create MX User from response
         throw new ResourceOwnerException();
     }
 }

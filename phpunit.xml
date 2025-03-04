@@ -1,11 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <phpunit backupGlobals="false"
-         backupStaticAttributes="false"
          bootstrap="vendor/autoload.php"
          colors="true"
-         convertErrorsToExceptions="true"
-         convertNoticesToExceptions="true"
-         convertWarningsToExceptions="true"
          processIsolation="false"
          stopOnFailure="false"
         >
@@ -14,13 +10,13 @@
             <directory suffix=".php">./tests/</directory>
         </testsuite>
     </testsuites>
-    <filter>
-        <whitelist>
+    <source>
+        <include>
             <directory suffix=".php">./</directory>
-            <exclude>
-                <directory suffix=".php">./vendor</directory>
-                <directory suffix=".php">./test</directory>
-            </exclude>
-        </whitelist>
-    </filter>
+        </include>
+        <exclude>
+            <directory suffix=".php">./vendor</directory>
+            <directory suffix=".php">./test</directory>
+        </exclude>
+    </source>
 </phpunit>
