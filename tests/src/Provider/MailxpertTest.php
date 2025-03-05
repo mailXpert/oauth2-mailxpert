@@ -3,9 +3,9 @@
 namespace Mailxpert\OAuth2\Client\Test\Provider;
 
 use League\OAuth2\Client\Provider\Exception\IdentityProviderException;
+use League\OAuth2\Client\Provider\GenericResourceOwner;
 use League\OAuth2\Client\Token\AccessToken;
 use League\OAuth2\Client\Tool\QueryBuilderTrait;
-use Mailxpert\OAuth2\Client\Exception\ResourceOwnerException;
 use Mailxpert\OAuth2\Client\Provider\Mailxpert;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\ResponseInterface;
@@ -120,18 +120,21 @@ class MailxpertTest extends TestCase
 
     public function testGetResourceOwnerDetailsUrl()
     {
-        $this->expectException(ResourceOwnerException::class);
         $token = $this->createMock(AccessToken::class);
-        $this->provider->getResourceOwnerDetailsUrl($token);
+        $detailsUrl = $this->provider->getResourceOwnerDetailsUrl($token);
+        $this->assertEquals('https://api.mailxpert.ch/v3/me', $detailsUrl);
     }
 
     public function testCreateResourceOwner()
     {
-        $this->expectException(ResourceOwnerException::class);
         $token = $this->createMock(AccessToken::class);
         $class = new \ReflectionClass(Mailxpert::class);
         $method = $class->getMethod('createResourceOwner');
         $method->setAccessible(true);
-        $method->invokeArgs($this->provider, [[], $token]);
+        $resourceOwner = $method->invokeArgs($this->provider, [['uid' => 'customer/user'], $token]);
+
+        $this->assertInstanceOf(GenericResourceOwner::class, $resourceOwner);
+        $this->assertEquals('customer/user', $resourceOwner->getId());
+        $this->assertEquals('customer/user', $resourceOwner->toArray()['uid']);
     }
 }
