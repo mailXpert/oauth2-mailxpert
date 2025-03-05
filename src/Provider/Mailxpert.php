@@ -6,6 +6,7 @@ namespace Mailxpert\OAuth2\Client\Provider;
 
 use League\OAuth2\Client\Provider\AbstractProvider;
 use League\OAuth2\Client\Provider\Exception\IdentityProviderException;
+use League\OAuth2\Client\Provider\GenericResourceOwner;
 use League\OAuth2\Client\Provider\ResourceOwnerInterface;
 use League\OAuth2\Client\Token\AccessToken;
 use League\OAuth2\Client\Tool\BearerAuthorizationTrait;
@@ -16,12 +17,14 @@ class Mailxpert extends AbstractProvider
 {
     use BearerAuthorizationTrait;
 
+    protected $baseHost = 'mailxpert.ch';
+
     /**
      * Get authorization url to begin OAuth 2.0 'Authorization Code' grant.
      */
     public function getBaseAuthorizationUrl(): string
     {
-        return 'https://app.mailxpert.ch/auth/v3/authorize';
+        return 'https://app.' . $this->baseHost . '/auth/v3/authorize';
     }
 
     /**
@@ -29,20 +32,19 @@ class Mailxpert extends AbstractProvider
      */
     public function getBaseAccessTokenUrl(array $params): string
     {
-        return 'https://app.mailxpert.ch/auth/v3/token';
+        return 'https://app.' . $this->baseHost . '/auth/v3/token';
     }
 
     /**
      * We do currently not support an owner resource.
      *
-     * @throws ResourceOwnerException
+     * @param AccessToken $token
      *
      * @return string|void
      */
     public function getResourceOwnerDetailsUrl(AccessToken $token)
     {
-        // FIXME: Create owner ressource, possibly use /v3/me endpoint
-        throw new ResourceOwnerException();
+        return 'https://api.' . $this->baseHost . '/v3/me';
     }
 
     /**
@@ -79,7 +81,11 @@ class Mailxpert extends AbstractProvider
      */
     protected function createResourceOwner(array $response, AccessToken $token)
     {
-        // FIXME: Create MX User from response
-        throw new ResourceOwnerException();
+        return new GenericResourceOwner($response, 'uid');
+    }
+
+    protected function getScopeSeparator(): string
+    {
+        return ' ';
     }
 }
