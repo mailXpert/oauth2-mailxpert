@@ -60,4 +60,9 @@ class Mailxpert extends AbstractProvider
     {
         return ' ';
     }
+
+    protected function getPkceMethod(): string
+    {
+        return self::PKCE_METHOD_S256;
+    }
 }
