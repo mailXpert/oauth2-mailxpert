@@ -18,17 +18,17 @@ class Mailxpert extends AbstractProvider
 
     public function getBaseAuthorizationUrl(): string
     {
-        return 'https://app.' . $this->baseHost . '/auth/v3/authorize';
+        return 'https://app.' . $this->baseHost . '/auth/authorize';
     }
 
     public function getBaseAccessTokenUrl(array $params): string
     {
-        return 'https://app.' . $this->baseHost . '/auth/v3/token';
+        return 'https://app.' . $this->baseHost . '/auth/token';
     }
 
     public function getResourceOwnerDetailsUrl(AccessToken $token): string
     {
-        return 'https://api.' . $this->baseHost . '/v3/me';
+        return 'https://api.' . $this->baseHost . '/me';
     }
 
     protected function getDefaultScopes(): array

@@ -60,7 +60,7 @@ class MailxpertTest extends TestCase
 
         $this->assertEquals('https', $uri['scheme']);
         $this->assertEquals('app.mailxpert.ch', $uri['host']);
-        $this->assertEquals('/auth/v3/authorize', $uri['path']);
+        $this->assertEquals('/auth/authorize', $uri['path']);
     }
 
     public function testGetBaseAccessTokenUrl(): void
@@ -72,7 +72,7 @@ class MailxpertTest extends TestCase
 
         $this->assertEquals('https', $uri['scheme']);
         $this->assertEquals('app.mailxpert.ch', $uri['host']);
-        $this->assertEquals('/auth/v3/token', $uri['path']);
+        $this->assertEquals('/auth/token', $uri['path']);
     }
 
     public function testGetAccessToken(): void
@@ -122,7 +122,7 @@ class MailxpertTest extends TestCase
     {
         $token = $this->createMock(AccessToken::class);
         $detailsUrl = $this->provider->getResourceOwnerDetailsUrl($token);
-        $this->assertEquals('https://api.mailxpert.ch/v3/me', $detailsUrl);
+        $this->assertEquals('https://api.mailxpert.ch/me', $detailsUrl);
     }
 
     public function testCreateResourceOwner()
