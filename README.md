@@ -35,7 +35,19 @@ $provider = new Mailxpert\OAuth2\Client\Provider\Mailxpert([
 ## Testing
 
 ``` bash
-$ ./vendor/bin/phpunit
+docker run --rm --tty -v "$PWD":/app -w /app php:7.4-cli php vendor/bin/phpunit
+docker run --rm --tty -v "$PWD":/app -w /app php:8.5-cli php vendor/bin/phpunit
+```
+
+## Misc
+Run php-cs-fixer:
+```bash
+docker run --rm --tty -v "$PWD":/app -w /app php:7.4-cli php tools/php-cs-fixer/vendor/bin/php-cs-fixer fix -vvv --diff --dry-run --allow-risky=yes --ansi
+```
+
+composer update:
+```bash
+docker run --rm --interactive --tty --volume $PWD:/app composer update
 ```
 
 ## Credits

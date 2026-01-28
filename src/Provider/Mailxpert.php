@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Mailxpert\OAuth2\Client\Provider;
 
 use League\OAuth2\Client\Provider\AbstractProvider;
@@ -15,30 +17,22 @@ class Mailxpert extends AbstractProvider
 
     /**
      * Get authorization url to begin OAuth 2.0 'Authorization Code' grant.
-     *
-     * @return string
      */
-    public function getBaseAuthorizationUrl()
+    public function getBaseAuthorizationUrl(): string
     {
         return 'https://v5.mailxpert.ch/oauth/v2/auth';
     }
 
     /**
      * Get access token url to retrieve token.
-     *
-     * @param array $params
-     *
-     * @return string
      */
-    public function getBaseAccessTokenUrl(array $params)
+    public function getBaseAccessTokenUrl(array $params): string
     {
         return 'https://v5.mailxpert.ch/oauth/v2/token';
     }
 
     /**
      * We do currently not support an owner resource.
-     *
-     * @param AccessToken $token
      *
      * @throws ResourceOwnerException
      *
@@ -51,37 +45,27 @@ class Mailxpert extends AbstractProvider
 
     /**
      * Get the default scopes uses by this provider. Currently there is no support of scopes at all thus returning an empty array.
-     *
-     * @return array
      */
-    protected function getDefaultScopes()
+    protected function getDefaultScopes(): array
     {
         return [];
     }
 
     /**
-     * @param ResponseInterface $response
-     * @param array|string      $data
+     * @param array|string $data
      *
      * @throws IdentityProviderException
      */
-    protected function checkResponse(ResponseInterface $response, $data)
+    protected function checkResponse(ResponseInterface $response, $data): void
     {
         $statusCode = $response->getStatusCode();
 
         if ($statusCode >= 400) {
-            throw new IdentityProviderException(
-                isset($data['message']) ? $data['message'] : $response->getReasonPhrase(),
-                $statusCode,
-                $response
-            );
+            throw new IdentityProviderException($data['message'] ?? $response->getReasonPhrase(), $statusCode, $response);
         }
     }
 
     /**
-     * @param array       $response
-     * @param AccessToken $token
-     *
      * @throws ResourceOwnerException
      *
      * @return \League\OAuth2\Client\Provider\ResourceOwnerInterface|void

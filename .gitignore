@@ -1,2 +1,4 @@
-vendor/
-composer.lock
+/.claude/
+/.phpunit.cache/
+/vendor/
+/tools/*/vendor/

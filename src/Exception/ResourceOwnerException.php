@@ -1,7 +1,11 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Mailxpert\OAuth2\Client\Exception;
 
-class ResourceOwnerException extends \Exception
+use Exception;
+
+class ResourceOwnerException extends Exception
 {
 }
