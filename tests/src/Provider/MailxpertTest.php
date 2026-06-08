@@ -31,15 +31,9 @@ class MailxpertTest extends TestCase
         ]);
     }
 
-    protected function getJsonFile(string $file, bool $encode = false): mixed
+    protected function getJsonFile(string $file): string
     {
-        $json = file_get_contents(__DIR__.'/../../'.$file);
-        $data = json_decode($json, true);
-        if ($encode && \JSON_ERROR_NONE == json_last_error()) {
-            return $data;
-        }
-
-        return $json;
+        return file_get_contents(__DIR__.'/../../'.$file);
     }
 
     public function testAuthorizationUrl(): void
@@ -83,20 +77,26 @@ class MailxpertTest extends TestCase
     {
         $responseJson = $this->getJsonFile('access_token_response.json');
 
-        $mockResponse = $this->createStub(ResponseInterface::class);
         $mockResponseStream = $this->createStub(StreamInterface::class);
+        $mockResponseStream->method('__toString')->willReturn($responseJson);
 
-        $mockResponseStream->method('getContents')->willReturn($responseJson);
+        $mockResponse = $this->createStub(ResponseInterface::class);
         $mockResponse->method('getBody')->willReturn($mockResponseStream);
+        $mockResponse->method('getHeader')->willReturn(['content-type' => 'json']);
+        $mockResponse->method('getStatusCode')->willReturn(200);
 
-        $responseData = json_decode($mockResponse->getBody()->getContents(), true);
+        $client = $this->createStub(\GuzzleHttp\ClientInterface::class);
+        $client->method('send')->willReturn($mockResponse);
+        $this->provider->setHttpClient($client);
 
-        $this->assertCount(5, $responseData);
-        $this->assertEquals('mock_access_token', $responseData['access_token']);
-        $this->assertEquals(3600, $responseData['expires_in']);
-        $this->assertEquals('bearer', $responseData['token_type']);
-        $this->assertNull($responseData['scope']);
-        $this->assertEquals('mock_refresh_token', $responseData['refresh_token']);
+        $token = $this->provider->getAccessToken('authorization_code', ['code' => 'mock_authorization_code']);
+
+        $this->assertInstanceOf(AccessToken::class, $token);
+        $this->assertEquals('mock_access_token', $token->getToken());
+        $this->assertEquals('mock_refresh_token', $token->getRefreshToken());
+        $this->assertEqualsWithDelta(time() + 3600, $token->getExpires(), 10);
+        $this->assertEquals('bearer', $token->getValues()['token_type']);
+        $this->assertNull($token->getValues()['scope']);
     }
 
     public function testExceptionThrownWhenErrorObjectReceived(): void
