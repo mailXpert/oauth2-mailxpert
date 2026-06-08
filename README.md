@@ -3,9 +3,7 @@
 
 ![Packagist](https://img.shields.io/packagist/v/mailXpert/oauth2-mailxpert.svg?style=flat-square)
 [![Software License](https://img.shields.io/badge/license-MIT-brightgreen.svg?style=flat-square)](LICENSE)
-[![Build Status](https://img.shields.io/travis/mailXpert/oauth2-mailxpert/master.svg?style=flat-square)](https://travis-ci.org/mailXpert/oauth2-mailxpert)
-[![Coverage Status](https://img.shields.io/scrutinizer/coverage/g/mailxpert/oauth2-mailxpert.svg?style=flat-square)](https://scrutinizer-ci.com/g/mailxpert/oauth2-mailxpert/code-structure)
-[![Quality Score](https://img.shields.io/scrutinizer/g/mailxpert/oauth2-mailxpert.svg?style=flat-square)](https://scrutinizer-ci.com/g/mailxpert/oauth2-mailxpert)
+[![CI](https://github.com/mailxpert/oauth2-mailxpert/actions/workflows/ci.yaml/badge.svg)](https://github.com/mailxpert/oauth2-mailxpert/actions/workflows/ci.yaml)
 [![Total Downloads](https://img.shields.io/packagist/dt/mailxpert/oauth2-mailxpert.svg?style=flat-square)](https://packagist.org/packages/mailxpert/oauth2-mailxpert)
 
 This package provides Mailxpert OAuth 2.0 support for the PHP League's [OAuth 2.0 Client](https://github.com/thephpleague/oauth2-client).
@@ -35,14 +33,14 @@ $provider = new Mailxpert\OAuth2\Client\Provider\Mailxpert([
 ## Testing
 
 ``` bash
-docker run --rm --tty -v "$PWD":/app -w /app php:7.4-cli php vendor/bin/phpunit
+docker run --rm --tty -v "$PWD":/app -w /app php:8.2-cli php vendor/bin/phpunit
 docker run --rm --tty -v "$PWD":/app -w /app php:8.5-cli php vendor/bin/phpunit
 ```
 
 ## Misc
 Run php-cs-fixer:
 ```bash
-docker run --rm --tty -v "$PWD":/app -w /app php:7.4-cli php tools/php-cs-fixer/vendor/bin/php-cs-fixer fix -vvv --diff --dry-run --allow-risky=yes --ansi
+docker run --rm --tty -v "$PWD":/app -w /app php:8.2-cli php tools/php-cs-fixer/vendor/bin/php-cs-fixer fix -vvv --diff --dry-run --allow-risky=yes --ansi
 ```
 
 composer update:

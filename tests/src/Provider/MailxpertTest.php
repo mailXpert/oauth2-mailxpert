@@ -9,17 +9,18 @@ use League\OAuth2\Client\Provider\GenericResourceOwner;
 use League\OAuth2\Client\Token\AccessToken;
 use League\OAuth2\Client\Tool\QueryBuilderTrait;
 use Mailxpert\OAuth2\Client\Provider\Mailxpert;
+use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\StreamInterface;
 use ReflectionClass;
 
+#[CoversClass(Mailxpert::class)]
 class MailxpertTest extends TestCase
 {
     use QueryBuilderTrait;
 
-    /** @var Mailxpert */
-    protected $provider;
+    protected Mailxpert $provider;
 
     protected function setUp(): void
     {
@@ -30,7 +31,7 @@ class MailxpertTest extends TestCase
         ]);
     }
 
-    protected function getJsonFile($file, $encode = false)
+    protected function getJsonFile(string $file, bool $encode = false): mixed
     {
         $json = file_get_contents(__DIR__.'/../../'.$file);
         $data = json_decode($json, true);
@@ -82,8 +83,8 @@ class MailxpertTest extends TestCase
     {
         $responseJson = $this->getJsonFile('access_token_response.json');
 
-        $mockResponse = $this->createMock(ResponseInterface::class);
-        $mockResponseStream = $this->createMock(StreamInterface::class);
+        $mockResponse = $this->createStub(ResponseInterface::class);
+        $mockResponseStream = $this->createStub(StreamInterface::class);
 
         $mockResponseStream->method('getContents')->willReturn($responseJson);
         $mockResponse->method('getBody')->willReturn($mockResponseStream);
@@ -105,8 +106,8 @@ class MailxpertTest extends TestCase
         $message = uniqid();
         $status = random_int(400, 600);
 
-        $postResponse = $this->createMock(ResponseInterface::class);
-        $postResponseStream = $this->createMock(StreamInterface::class);
+        $postResponse = $this->createStub(ResponseInterface::class);
+        $postResponseStream = $this->createStub(StreamInterface::class);
 
         $postResponseStream->method('getContents')->willReturn('{"message": "'.$message.'","code": "invalid","fields": {"first_name": ["Required"]}}');
         $postResponseStream->method('__toString')->willReturn('{"message": "'.$message.'","code": "invalid","fields": {"first_name": ["Required"]}}');
@@ -114,7 +115,7 @@ class MailxpertTest extends TestCase
         $postResponse->method('getHeader')->willReturn(['content-type' => 'json']);
         $postResponse->method('getStatusCode')->willReturn($status);
 
-        $client = $this->createMock(\GuzzleHttp\ClientInterface::class);
+        $client = $this->createStub(\GuzzleHttp\ClientInterface::class);
         $client->method('send')->willReturn($postResponse);
 
         $this->provider->setHttpClient($client);
@@ -123,14 +124,14 @@ class MailxpertTest extends TestCase
 
     public function testGetResourceOwnerDetailsUrl(): void
     {
-        $token = $this->createMock(AccessToken::class);
+        $token = $this->createStub(AccessToken::class);
         $detailsUrl = $this->provider->getResourceOwnerDetailsUrl($token);
         $this->assertEquals('https://api.mailxpert.ch/me', $detailsUrl);
     }
 
     public function testCreateResourceOwner(): void
     {
-        $token = $this->createMock(AccessToken::class);
+        $token = $this->createStub(AccessToken::class);
         $class = new ReflectionClass(Mailxpert::class);
         $method = $class->getMethod('createResourceOwner');
         $resourceOwner = $method->invokeArgs($this->provider, [['uid' => 'customer/user'], $token]);

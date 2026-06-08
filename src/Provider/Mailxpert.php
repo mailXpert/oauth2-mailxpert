@@ -16,7 +16,7 @@ class Mailxpert extends AbstractProvider
 {
     use BearerAuthorizationTrait;
 
-    protected $baseHost = 'mailxpert.ch';
+    protected string $baseHost = 'mailxpert.ch';
 
     public function getBaseAuthorizationUrl(): string
     {

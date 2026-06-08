@@ -16,7 +16,7 @@
         </include>
         <exclude>
             <directory suffix=".php">./vendor</directory>
-            <directory suffix=".php">./test</directory>
+            <directory suffix=".php">./tests</directory>
         </exclude>
     </source>
 </phpunit>
