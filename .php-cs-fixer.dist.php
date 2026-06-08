@@ -7,20 +7,32 @@
  */
 $config = new PhpCsFixer\Config();
 return $config
+    ->registerCustomFixers(new PhpCsFixerCustomFixers\Fixers())
     ->setParallelConfig(\PhpCsFixer\Runner\Parallel\ParallelConfigFactory::detect())
     ->setRiskyAllowed(true)
     ->setRules([
-        '@PER-CS' => true,
+        '@auto' => true,
+        '@auto:risky' => true,
         '@Symfony' => true,
         '@Symfony:risky' => true,
-        '@autoPHPMigration' => true,
-        '@autoPHPMigration:risky' => true,
-//        '@PHP7x1Migration' => true,
-//        '@PHP7x1Migration:risky' => true,
         'phpdoc_order' => true,
         'ordered_imports' => true,
         'array_syntax' => ['syntax' => 'short'],
         'global_namespace_import' => true,
+        'declare_strict_types' => true,
+        \PhpCsFixerCustomFixers\Fixer\CommentSurroundedBySpacesFixer::name() => true,
+        \PhpCsFixerCustomFixers\Fixer\ConstructorEmptyBracesFixer::name() => true,
+        \PhpCsFixerCustomFixers\Fixer\MultilineCommentOpeningClosingAloneFixer::name() => true,
+        \PhpCsFixerCustomFixers\Fixer\NoDoctrineMigrationsGeneratedCommentFixer::name() => true,
+        \PhpCsFixerCustomFixers\Fixer\NoUselessDoctrineRepositoryCommentFixer::name() => true,
+        \PhpCsFixerCustomFixers\Fixer\NoUselessCommentFixer::name() => true,
+        \PhpCsFixerCustomFixers\Fixer\NoUselessDirnameCallFixer::name() => true,
+        \PhpCsFixerCustomFixers\Fixer\EmptyFunctionBodyFixer::name() => true,
+        \PhpCsFixerCustomFixers\Fixer\NoDuplicatedArrayKeyFixer::name() => true,
+        \PhpCsFixerCustomFixers\Fixer\NoDuplicatedImportsFixer::name() => true,
+        \PhpCsFixerCustomFixers\Fixer\NoTrailingCommaInSinglelineFixer::name() => true,
+        \PhpCsFixerCustomFixers\Fixer\NoUselessStrlenFixer::name() => true,
+        \PhpCsFixerCustomFixers\Fixer\PhpdocTypesTrimFixer::name() => true,
     ])
     ->setFinder(PhpCsFixer\Finder::create()
         ->in(__DIR__ . '/src')

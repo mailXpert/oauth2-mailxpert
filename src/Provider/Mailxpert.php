@@ -20,17 +20,17 @@ class Mailxpert extends AbstractProvider
 
     public function getBaseAuthorizationUrl(): string
     {
-        return 'https://app.' . $this->baseHost . '/auth/authorize';
+        return 'https://app.'.$this->baseHost.'/auth/authorize';
     }
 
     public function getBaseAccessTokenUrl(array $params): string
     {
-        return 'https://app.' . $this->baseHost . '/auth/token';
+        return 'https://app.'.$this->baseHost.'/auth/token';
     }
 
     public function getResourceOwnerDetailsUrl(AccessToken $token): string
     {
-        return 'https://api.' . $this->baseHost . '/me';
+        return 'https://api.'.$this->baseHost.'/me';
     }
 
     protected function getDefaultScopes(): array
@@ -41,7 +41,6 @@ class Mailxpert extends AbstractProvider
         ];
     }
 
-    /** @inheritDoc */
     protected function checkResponse(ResponseInterface $response, $data): void
     {
         $statusCode = $response->getStatusCode();

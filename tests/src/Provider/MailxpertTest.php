@@ -12,6 +12,7 @@ use Mailxpert\OAuth2\Client\Provider\Mailxpert;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\StreamInterface;
+use ReflectionClass;
 
 class MailxpertTest extends TestCase
 {
@@ -31,7 +32,7 @@ class MailxpertTest extends TestCase
 
     protected function getJsonFile($file, $encode = false)
     {
-        $json = file_get_contents(\dirname(__DIR__, 2).'/'.$file);
+        $json = file_get_contents(__DIR__.'/../../'.$file);
         $data = json_decode($json, true);
         if ($encode && \JSON_ERROR_NONE == json_last_error()) {
             return $data;
@@ -93,16 +94,16 @@ class MailxpertTest extends TestCase
         $this->assertEquals('mock_access_token', $responseData['access_token']);
         $this->assertEquals(3600, $responseData['expires_in']);
         $this->assertEquals('bearer', $responseData['token_type']);
-        $this->assertEquals(null, $responseData['scope']);
+        $this->assertNull($responseData['scope']);
         $this->assertEquals('mock_refresh_token', $responseData['refresh_token']);
     }
 
-    public function testExceptionThrownWhenErrorObjectReceived()
+    public function testExceptionThrownWhenErrorObjectReceived(): void
     {
         $this->expectException(IdentityProviderException::class);
 
         $message = uniqid();
-        $status = rand(400, 600);
+        $status = random_int(400, 600);
 
         $postResponse = $this->createMock(ResponseInterface::class);
         $postResponseStream = $this->createMock(StreamInterface::class);
@@ -120,19 +121,18 @@ class MailxpertTest extends TestCase
         $this->provider->getAccessToken('authorization_code', ['code' => 'mock_authorization_code']);
     }
 
-    public function testGetResourceOwnerDetailsUrl()
+    public function testGetResourceOwnerDetailsUrl(): void
     {
         $token = $this->createMock(AccessToken::class);
         $detailsUrl = $this->provider->getResourceOwnerDetailsUrl($token);
         $this->assertEquals('https://api.mailxpert.ch/me', $detailsUrl);
     }
 
-    public function testCreateResourceOwner()
+    public function testCreateResourceOwner(): void
     {
         $token = $this->createMock(AccessToken::class);
-        $class = new \ReflectionClass(Mailxpert::class);
+        $class = new ReflectionClass(Mailxpert::class);
         $method = $class->getMethod('createResourceOwner');
-        $method->setAccessible(true);
         $resourceOwner = $method->invokeArgs($this->provider, [['uid' => 'customer/user'], $token]);
 
         $this->assertInstanceOf(GenericResourceOwner::class, $resourceOwner);

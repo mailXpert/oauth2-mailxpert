@@ -1,39 +1,49 @@
 {
-  "name": "mailxpert/oauth2-mailxpert",
-  "description": "mailXpert OAuth 2.0 Client Provider for the PHP League OAuth 2.0 Client",
-  "license": "MIT",
-  "authors": [
-    {
-      "name": "ARTACK WebLab GmbH",
-      "homepage": "https://artack.ch"
+    "name": "mailxpert/oauth2-mailxpert",
+    "description": "mailXpert OAuth 2.0 Client Provider for the PHP League OAuth 2.0 Client",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "mailXpert GmbH",
+            "homepage": "https://mailxpert.ch"
+        }
+    ],
+    "keywords": [
+        "php",
+        "mailxpert",
+        "api",
+        "oauth",
+        "oauth2",
+        "client",
+        "authorization",
+        "authentication"
+    ],
+    "require": {
+        "php": "^7.4|^8.0",
+        "league/oauth2-client": "^2.0"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^11.0",
+        "symfony/var-dumper": "^7.4"
+    },
+    "autoload": {
+        "psr-4": {
+            "Mailxpert\\OAuth2\\Client\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Mailxpert\\OAuth2\\Client\\Test\\": "tests/src/"
+        }
+    },
+    "scripts": {
+        "update:tools": "composer update -d tools/php-cs-fixer",
+        "phpcs": "tools/php-cs-fixer/vendor/bin/php-cs-fixer fix -vvv --diff --dry-run --allow-risky=yes --ansi",
+        "phpcs:fix": "tools/php-cs-fixer/vendor/bin/php-cs-fixer fix -vvv --allow-risky=yes --ansi",
+        "phpunit": "vendor/bin/phpunit --display-all-issues",
+        "test": [
+            "@phpcs",
+            "@phpunit"
+        ]
     }
-  ],
-  "keywords": [
-    "php",
-    "mailxpert",
-    "api",
-    "oauth",
-    "oauth2",
-    "client",
-    "authorization",
-    "authentication"
-  ],
-  "require": {
-    "php": "^7.3|^8.0",
-    "league/oauth2-client": "^2.0"
-  },
-  "require-dev": {
-    "phpunit/phpunit": "^11.0",
-    "symfony/var-dumper": "^3.4"
-  },
-  "autoload": {
-    "psr-4": {
-      "Mailxpert\\OAuth2\\Client\\": "src/"
-    }
-  },
-  "autoload-dev": {
-    "psr-4": {
-      "Mailxpert\\OAuth2\\Client\\Test\\": "tests/src/"
-    }
-  }
 }
