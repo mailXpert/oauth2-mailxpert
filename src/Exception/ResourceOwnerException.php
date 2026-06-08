@@ -6,6 +6,6 @@ namespace Mailxpert\OAuth2\Client\Exception;
 
 use Exception;
 
-class ResourceOwnerException extends Exception
+final class ResourceOwnerException extends Exception
 {
 }
