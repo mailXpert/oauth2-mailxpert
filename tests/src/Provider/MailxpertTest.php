@@ -104,7 +104,7 @@ class MailxpertTest extends TestCase
         $this->expectException(IdentityProviderException::class);
 
         $message = uniqid();
-        $status = random_int(400, 600);
+        $status = random_int(400, 599);
 
         $postResponse = $this->createStub(ResponseInterface::class);
         $postResponseStream = $this->createStub(StreamInterface::class);
