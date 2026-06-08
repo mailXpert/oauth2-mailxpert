@@ -8,6 +8,11 @@
 
 This package provides Mailxpert OAuth 2.0 support for the PHP League's [OAuth 2.0 Client](https://github.com/thephpleague/oauth2-client).
 
+## Requirements
+
+* PHP 8.2, 8.3, 8.4 or 8.5
+* [league/oauth2-client](https://github.com/thephpleague/oauth2-client) `^2.7`
+
 ## Installation
 
 To install, use composer:
@@ -32,15 +37,34 @@ $provider = new Mailxpert\OAuth2\Client\Provider\Mailxpert([
 
 ## Testing
 
-``` bash
+Run the test suite:
+
+```bash
+composer phpunit
+```
+
+Run the full check (php-cs-fixer + PHPUnit):
+
+```bash
+composer test
+```
+
+Or run PHPUnit against a specific PHP version with Docker:
+
+```bash
 docker run --rm --tty -v "$PWD":/app -w /app php:8.2-cli php vendor/bin/phpunit
 docker run --rm --tty -v "$PWD":/app -w /app php:8.5-cli php vendor/bin/phpunit
 ```
 
 ## Misc
-Run php-cs-fixer:
+Check code style with php-cs-fixer:
 ```bash
-docker run --rm --tty -v "$PWD":/app -w /app php:8.2-cli php tools/php-cs-fixer/vendor/bin/php-cs-fixer fix -vvv --diff --dry-run --allow-risky=yes --ansi
+composer phpcs
+```
+
+Apply the fixes:
+```bash
+composer phpcs:fix
 ```
 
 composer update:
@@ -48,13 +72,6 @@ composer update:
 docker run --rm --interactive --tty --volume $PWD:/app composer update
 ```
 
-## Credits
-
-- [mailXpert GmbH](https://github.com/mailxpert)
-- [ARTACK WebLab GmbH](https://github.com/artack)
-- [All Contributors](https://github.com/mailxpert/oauth2-mailxpert/contributors)
-
-
 ## License
 
-The MIT License (MIT). Please see [License File](https://github.com/mailxpert/oauth2-mailxpert/blob/master/LICENSE) for more information.
+The MIT License (MIT). Please see [License File](https://github.com/mailxpert/oauth2-mailxpert/blob/main/LICENSE) for more information.
